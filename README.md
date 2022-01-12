@@ -1,6 +1,6 @@
 # playlist player
 
-simple playlist that can play your songs
+simple playlist built wtih react and plyr-react that can play your songs
 
 ### now supports:
 
