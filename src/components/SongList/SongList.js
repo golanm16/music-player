@@ -12,6 +12,8 @@ export const SongList = ({ songs, playSong }) => {
           artist={song.artist}
           key={song.title}
           playSong={playSong}
+          link={song.link}
+          provider={song.provider}
         />
       ))}
     </div>

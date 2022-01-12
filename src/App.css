@@ -37,6 +37,9 @@
   }
 }
 
-.App * {
-  border: solid, black, 2px;
+.plyr {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  min-width: 200px;
 }

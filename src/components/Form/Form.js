@@ -5,6 +5,8 @@ export const Form = ({ addSong }) => {
   const addedSong = useRef("");
   const addedArtist = useRef("");
   const addedLink = useRef("");
+  const sourceTypeRef = useRef("youtube");
+  const sourceTypes = ["youtube", "raw file"];
 
   return (
     <div className="Form">
@@ -30,9 +32,26 @@ export const Form = ({ addSong }) => {
         }}
         placeholder="link"
       ></input>
+      <select
+        onChange={(e) => {
+          sourceTypeRef.current = e.target.value;
+          console.log(sourceTypeRef.current);
+        }}
+      >
+        {sourceTypes.map((src) => (
+          <option key={src} value={src}>
+            {src}
+          </option>
+        ))}
+      </select>
       <button
         onClick={() => {
-          addSong(addedSong.current, addedArtist.current, addedLink.current);
+          addSong(
+            addedSong.current,
+            addedArtist.current,
+            addedLink.current,
+            sourceTypeRef.current
+          );
         }}
       >
         add song

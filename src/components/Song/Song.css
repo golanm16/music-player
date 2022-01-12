@@ -1,4 +1,12 @@
-playBtn:hover {
+.Song {
+  display: flex;
+  min-height: 100px;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+.playBtn {
+  border: black solid 3px;
   cursor: pointer;
   -webkit-user-select: none;
   -webkit-touch-callout: none;

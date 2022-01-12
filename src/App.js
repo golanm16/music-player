@@ -1,16 +1,36 @@
-import "./App.css";
 import { Header } from "./components/Header/Header";
 import { Form } from "./components/Form/Form";
 import { SongList } from "./components/SongList/SongList";
 import { useEffect, useRef, useState } from "react";
 import Plyr from "plyr-react";
 import "plyr-react/dist/plyr.css";
+import "./App.css";
 
 function App() {
+  const track = {
+    type: "audio",
+    sources: [
+      {
+        src: "https://cdn.plyr.io/static/demo/Kishi_Bashi_-_It_All_Began_With_a_Burst.mp3",
+      },
+    ],
+  };
+  const audioSrc = {
+    type: "audio",
+    sources: [
+      {
+        src: { track },
+      },
+    ],
+  };
+  const videoOptions = {
+    autoplay: true,
+  };
+
   // use states
   const [songs, setSongs] = useState([]);
   const [currentSong, setCurrentSong] = useState({});
-  const [playerSrc, setPlayerSrc] = useState(null);
+  const [playerSrc, setPlayerSrc] = useState();
 
   // use refs
   const counterRef = useRef(1);
@@ -18,18 +38,26 @@ function App() {
   // useeffects
   useEffect(() => {
     setSongs([
-      { id: 1, title: "back in black", artist: "ac/dc", link: "pAgnJDJN4VA" },
+      {
+        id: 1,
+        title: "back in black",
+        artist: "ac/dc",
+        link: "pAgnJDJN4VA",
+        provider: "youtube",
+      },
       {
         id: 2,
         title: "hotel california",
         artist: "the eagles",
         link: "KZ1RP84QLdY",
+        provider: "youtube",
       },
       {
         id: 3,
         title: "redemption song",
         artist: "bob marley",
-        link: "yv5xonFSC4c",
+        link: "kOFu6b3w6c0",
+        provider: "youtube",
       },
     ]);
     counterRef.current = 4;
@@ -49,13 +77,22 @@ function App() {
       sources: [
         {
           src: song.link,
-          provider: "youtube",
+          ...(song.provider && { provider: song.provider }),
         },
       ],
     });
   };
-  const addSong = (title, artist, link) => {
-    setSongs([...songs, { id: counterRef.current++, title, link, artist }]);
+  const addSong = (title, artist, link, srcType) => {
+    setSongs([
+      ...songs,
+      {
+        id: counterRef.current++,
+        title,
+        link,
+        artist,
+        provider: srcType === "raw file" ? null : srcType,
+      },
+    ]);
   };
   const removeSong = (song) => {
     console.log("remove");
@@ -69,7 +106,7 @@ function App() {
       <Header />
       <Form addSong={addSong} />
       <SongList songs={songs} playSong={playSong} />
-      {playerSrc && <Plyr source={playerSrc} />}
+      {playerSrc && <Plyr source={playerSrc} options={videoOptions} />}
     </div>
   );
 }
