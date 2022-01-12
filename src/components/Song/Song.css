@@ -13,13 +13,32 @@
   border: black solid 3px;
   border-radius: 5px;
   margin: 10px;
+}
+.playBtn:hover {
+  background-color: green;
+}
+.song-thumbnail * {
+  width: 150px;
+  max-width: 150px;
+}
+.removeBtn {
+  padding: 0;
+  margin-top: 40px;
+  font-size: 30px;
+  height: 40px;
+  border: solid black 1px;
+}
+.song-text {
+  text-align: left;
+}
+.song-info {
+  display: flex;
+}
+.clickable {
   cursor: pointer;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-.playBtn:hover {
-  background-color: green;
 }

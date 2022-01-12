@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Plyr from "plyr-react";
 import "plyr-react/dist/plyr.css";
 import "./App.css";
+import hotelSong from "./assets/hotel.mp3";
 
 function App() {
   const videoOptions = {
@@ -14,7 +15,7 @@ function App() {
   // use states
   const [songs, setSongs] = useState([]);
   const [currentSong, setCurrentSong] = useState({});
-  const [playerSrc, setPlayerSrc] = useState();
+  const [playerSrc, setPlayerSrc] = useState(null);
 
   // use refs
   const counterRef = useRef(1);
@@ -43,6 +44,13 @@ function App() {
         link: "kOFu6b3w6c0",
         provider: "youtube",
       },
+      {
+        id: 4,
+        title: "hotel california - audio only",
+        artist: "the eagles",
+        link: hotelSong,
+        provider: null,
+      },
     ]);
     counterRef.current = 4;
     // playerRef.current.volume = 0.5;
@@ -66,6 +74,7 @@ function App() {
       ],
     });
   };
+
   const addSong = (title, artist, link, srcType) => {
     setSongs([
       ...songs,
@@ -78,18 +87,29 @@ function App() {
       },
     ]);
   };
-  const removeSong = (song) => {
-    console.log("remove");
-    // setSongs([...songs.splice])
+
+  const removeSong = (id) => {
+    console.log("remove song " + id);
+    setSongs([...songs.filter((s) => s.id !== id)]);
   };
 
+  // const exitPlayer = () => {
+  //   setPlayerSrc(null);
+  // };
   // use contexts
 
   return (
     <div className="App">
       <Header />
       <Form addSong={addSong} />
-      <SongList songs={songs} playSong={playSong} />
+      {/* <div
+        onClick={() => {
+          exitPlayer();
+        }}
+      >
+        ❌ close player
+      </div> */}
+      <SongList songs={songs} playSong={playSong} removeSong={removeSong} />
       {playerSrc && <Plyr source={playerSrc} options={videoOptions} />}
     </div>
   );
