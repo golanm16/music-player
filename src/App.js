@@ -7,22 +7,6 @@ import "plyr-react/dist/plyr.css";
 import "./App.css";
 
 function App() {
-  const track = {
-    type: "audio",
-    sources: [
-      {
-        src: "https://cdn.plyr.io/static/demo/Kishi_Bashi_-_It_All_Began_With_a_Burst.mp3",
-      },
-    ],
-  };
-  const audioSrc = {
-    type: "audio",
-    sources: [
-      {
-        src: { track },
-      },
-    ],
-  };
   const videoOptions = {
     autoplay: true,
   };
