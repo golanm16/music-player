@@ -1,4 +1,3 @@
-import { Song } from "../Song/Song";
 import "./Result.css";
 
 export const Result = ({ id, title, artist, art, addSong }) => {
