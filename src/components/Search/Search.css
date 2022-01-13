@@ -1,0 +1,10 @@
+.search {
+  width: 40vw;
+}
+.search-input {
+  display: flex;
+}
+.search_icon {
+  height: 40px;
+  width: 40px;
+}

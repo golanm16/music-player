@@ -16,31 +16,38 @@ export const Song = ({
     : default_thumbnail_img;
   return (
     <div className="Song">
-      <div
-        className="clickable removeBtn"
-        onClick={() => {
-          removeSong(id);
-        }}
-      >
-        🗑
-      </div>
-      <div className="song-info">
-        <div className="song-thumbnail">
-          <img src={thumbnail_img} alt={`${title} thumbnail art`} />
+      <div className="container-left">
+        <div
+          className="clickable removeBtn"
+          onClick={() => {
+            if (removeSong) {
+              removeSong(id);
+            }
+          }}
+        >
+          🗑
         </div>
-        <div className="song-text">
-          <h4>💿 {title}</h4>
-          <h5>👤 {artist}</h5>
+
+        <div className="song-info">
+          <div className="song-thumbnail">
+            <img src={thumbnail_img} alt={`${title} thumbnail art`} />
+          </div>
+          <div className="song-text">
+            <h4>💿 {title}</h4>
+            <h5>👤 {artist}</h5>
+          </div>
         </div>
       </div>
       <div
         className="clickable playBtn"
         onClick={() => {
-          console.log("in song", id);
-          playSong(id);
+          if (playSong) {
+            console.log("in song", id);
+            playSong(id);
+          }
         }}
       >
-        <img src={play_button_img} alt="play button" />
+        <img className="play-btn-img" src={play_button_img} alt="play button" />
       </div>
     </div>
   );

@@ -6,7 +6,9 @@
   overflow: hidden;
   justify-content: space-between;
 }
-
+.container-left {
+  display: flex;
+}
 .playBtn {
   background-color: gray;
   height: 100px;
@@ -14,8 +16,9 @@
   border-radius: 5px;
   margin: 10px;
 }
-.playBtn:hover {
-  background-color: green;
+.playBtn:hover * {
+  filter: invert(100%);
+  -webkit-filter: invert(100%);
 }
 .song-thumbnail * {
   width: 150px;

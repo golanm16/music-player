@@ -6,6 +6,7 @@ import Plyr from "plyr-react";
 import "plyr-react/dist/plyr.css";
 import "./App.css";
 import hotelSong from "./assets/hotel.mp3";
+import { Search } from "./components/Search/Search";
 
 function App() {
   const videoOptions = {
@@ -52,7 +53,7 @@ function App() {
         provider: null,
       },
     ]);
-    counterRef.current = 4;
+    counterRef.current = 5;
     // playerRef.current.volume = 0.5;
     // playerRef.current.source = console.log(playerRef.current);
   }, []);
@@ -102,14 +103,11 @@ function App() {
     <div className="App">
       <Header />
       <Form addSong={addSong} />
-      {/* <div
-        onClick={() => {
-          exitPlayer();
-        }}
-      >
-        ❌ close player
-      </div> */}
-      <SongList songs={songs} playSong={playSong} removeSong={removeSong} />
+
+      <div className="song-containers">
+        <SongList songs={songs} playSong={playSong} removeSong={removeSong} />
+        <Search addSong={addSong} />
+      </div>
       {playerSrc && <Plyr source={playerSrc} options={videoOptions} />}
     </div>
   );
