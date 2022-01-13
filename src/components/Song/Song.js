@@ -1,6 +1,7 @@
 import "./Song.css";
 import default_thumbnail_img from "../../assets/no_thumbnail.png";
 import play_button_img from "../../assets/play-button.png";
+import { SongInfo } from "../SongInfo/SongInfo";
 
 export const Song = ({
   title,
@@ -28,15 +29,7 @@ export const Song = ({
           🗑
         </div>
 
-        <div className="song-info">
-          <div className="song-thumbnail">
-            <img src={thumbnail_img} alt={`${title} thumbnail art`} />
-          </div>
-          <div className="song-text">
-            <h4>💿 {title}</h4>
-            <h5>👤 {artist}</h5>
-          </div>
-        </div>
+        <SongInfo title={title} artist={artist} art={thumbnail_img} />
       </div>
       <div
         className="clickable playBtn"

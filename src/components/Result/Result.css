@@ -1,0 +1,16 @@
+.result {
+  display: flex;
+  justify-content: space-between;
+}
+.result button {
+  height: 40px;
+  margin-top: 20px;
+}
+.clickable {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

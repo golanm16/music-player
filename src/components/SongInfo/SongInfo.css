@@ -1,0 +1,10 @@
+.song-thumbnail * {
+  width: 150px;
+  max-width: 150px;
+}
+.song-text {
+  text-align: left;
+}
+.song-info {
+  display: flex;
+}

@@ -21,7 +21,6 @@ import "./ResultList.css";
 // };
 
 export const ResultList = ({ searchResults, addSong }) => {
-  console.table(searchResults[0]);
   return (
     <div className="result-list">
       {searchResults.map((res) => (
