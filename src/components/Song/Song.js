@@ -2,6 +2,7 @@ import "./Song.css";
 import default_thumbnail_img from "../../assets/no_thumbnail.png";
 import play_button_img from "../../assets/play-button.png";
 import { SongInfo } from "../SongInfo/SongInfo";
+import { SongRating } from "../SongRating/SongRating";
 
 export const Song = ({
   title,
@@ -30,6 +31,7 @@ export const Song = ({
         </div>
 
         <SongInfo title={title} artist={artist} art={thumbnail_img} />
+        {provider && <SongRating id={link} />}
       </div>
       <div
         className="clickable playBtn"
