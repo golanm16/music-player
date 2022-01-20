@@ -38,10 +38,11 @@
 }
 
 .plyr {
-  position: absolute;
+  position: fixed;
   right: 10px;
-  bottom: 10px;
-  min-width: 200px;
+  top: 10px;
+  max-width: 320px;
+  max-height: 180px;
 }
 .song-containers {
   display: flex;

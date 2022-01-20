@@ -29,8 +29,9 @@ export const ResultList = ({ searchResults, addSong }) => {
           key={res.id}
           id={res.id}
           title={res.title}
-          artist={res.author.name}
-          art={res.bestThumbnail.url}
+          artist={res.artist.title}
+          artistImg={res.artist.imgs[res.artist.imgs.length - 1]}
+          art={res.imgs[res.imgs.length - 1].url}
         />
       ))}
     </div>

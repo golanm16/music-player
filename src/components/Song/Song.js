@@ -1,21 +1,18 @@
 import "./Song.css";
-import default_thumbnail_img from "../../assets/no_thumbnail.png";
-import play_button_img from "../../assets/play-button.png";
 import { SongInfo } from "../SongInfo/SongInfo";
-import { SongRating } from "../SongRating/SongRating";
+import { YoutubeRating } from "../YoutubeRating/YoutubeRating";
+import { useContext } from "react";
+import songContext from "../../contexts/SongContext";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import StopIcon from "@mui/icons-material/Stop";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
-export const Song = ({
-  title,
-  artist,
-  playSong,
-  id,
-  link,
-  provider,
-  removeSong,
-}) => {
+export const Song = ({ title, artist, id, link, provider }) => {
   const thumbnail_img = provider
     ? `https://img.youtube.com/vi/${link}/0.jpg`
-    : default_thumbnail_img;
+    : null;
+  const { removeSong, playSong, currentSongId, stopSong } =
+    useContext(songContext);
   return (
     <div className="Song">
       <div className="container-left">
@@ -27,22 +24,24 @@ export const Song = ({
             }
           }}
         >
-          🗑
+          <DeleteForeverIcon />
         </div>
 
         <SongInfo title={title} artist={artist} art={thumbnail_img} />
-        {provider && <SongRating id={link} />}
+        {provider && <YoutubeRating id={link} />}
       </div>
       <div
         className="clickable playBtn"
         onClick={() => {
-          if (playSong) {
-            console.log("in song", id);
+          if (playSong && currentSongId !== id) {
+            console.log("playing song", link);
             playSong(id);
+          } else if (currentSongId) {
+            stopSong();
           }
         }}
       >
-        <img className="play-btn-img" src={play_button_img} alt="play button" />
+        {currentSongId !== id ? <PlayArrowIcon /> : <StopIcon />}
       </div>
     </div>
   );

@@ -39,7 +39,7 @@ export const Form = ({ addSong }) => {
         }}
       >
         {sourceTypes.map((src) => (
-          <option key={src} value={src}>
+          <option key={src} value={src !== "raw file" ? src : null}>
             {src}
           </option>
         ))}

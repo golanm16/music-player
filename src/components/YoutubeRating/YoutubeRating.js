@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
-import "./SongRating.css";
+import "./YoutubeRating.css";
+import logo from "../../assets/youtube-logo.png";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 
-export const SongRating = ({ id }) => {
+export const YoutubeRating = ({ id }) => {
   // useStates
   const [views, setViews] = useState("fetching views");
   const [likes, setLikes] = useState("fetching likes");
@@ -41,9 +46,20 @@ export const SongRating = ({ id }) => {
   // react component
   return (
     <div className="rating">
-      <h4 className="views">👁 {views}</h4>
-      <h4 className="likes">👍 {likes}</h4>
-      <h4 className="dislikes">👎 {dislikes}</h4>
+      <div className="logo-container">
+        <YouTubeIcon />
+      </div>
+      <label className="views">
+        <VisibilityIcon /> {views}
+      </label>
+      <br />
+      <label className="likes">
+        <ThumbUpIcon /> {likes}
+      </label>
+      <br />
+      <label className="dislikes">
+        <ThumbDownIcon /> {dislikes}
+      </label>
     </div>
   );
 };

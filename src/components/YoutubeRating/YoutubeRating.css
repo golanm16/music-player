@@ -1,0 +1,13 @@
+.rating {
+  padding-left: 10px;
+  text-align: left;
+}
+.logo {
+  height: 30px;
+  margin: 0;
+  padding: 0;
+}
+.logo-container {
+  /* border: solid black 3px; */
+  text-align: center;
+}
