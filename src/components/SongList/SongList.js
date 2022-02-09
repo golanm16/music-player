@@ -10,8 +10,8 @@ export const SongList = ({ songs }) => {
           id={song.id}
           title={song.title}
           artist={song.artist}
-          key={song.title}
-          link={song.link}
+          key={song.src}
+          link={song.src}
           provider={song.provider}
         />
       ))}

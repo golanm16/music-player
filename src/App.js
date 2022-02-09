@@ -12,9 +12,11 @@ import UserContext from "./contexts/UserContext";
 import { Song } from "./classes/Song";
 import { LoginPage } from "./components/LoginPage/LoginPage";
 import { Button } from "@mui/material";
+import PlaylistPicker from "./components/PlaylistPicker/PlaylistPicker";
 
 function App() {
   const videoOptions = { autoplay: true };
+  const serverUrl = process.env.REACT_APP_SONGS_SERVER_URL;
 
   // use states
   const [songs, setSongs] = useState([]);
@@ -22,26 +24,15 @@ function App() {
   const [playerSrc, setPlayerSrc] = useState(null);
   const [showPlayer, setShowPlayer] = useState(false);
   const [userAccessToken, setUserAccessToken] = useState(null);
+  const [playlist, setPlaylist] = useState("");
 
   // use refs
   const playAllCondRef = useRef(false);
   const plyrRef = useRef(null);
+  const plyrIoClassicRef = useRef(null);
   const currentSongIndexRef = useRef(null);
 
   // useeffects
-
-  const addStarterSongs = async () => {
-    setSongs([
-      new Song("back in black", "ac/dc", "pAgnJDJN4VA", "youtube"),
-      new Song("hotel california", "the eagles", "KZ1RP84QLdY", "youtube"),
-      new Song("redemption song", "bob marley", "kOFu6b3w6c0", "youtube"),
-      new Song("hotel california - audio only", "the eagles", hotelSong),
-    ]);
-  };
-  useEffect(() => {
-    // addStarterSongs();
-  }, []);
-
   useEffect(() => {
     if (userAccessToken) {
       syncUserSongs(userAccessToken);
@@ -49,35 +40,32 @@ function App() {
       setSongs([]);
     }
   }, [userAccessToken]);
+  useEffect(() => {
+    playlist ? getPlaylist(playlist) : syncUserSongs(userAccessToken);
+  }, [playlist]);
 
   // functions
-  const syncUserSongs = async (AccessToken) => {
-    try {
-      for (const s of songs) {
-        await addSongToDB(s);
-      }
-    } catch {
-      console.log("failed adding current songs to DB");
-    }
-    try {
-      const rsp = await fetch("http://localhost:5215/songs/", {
-        headers: {
-          "Content-Type": "application/json",
-          authorization: "Bearer " + AccessToken,
-        },
-      });
-      console.log("fetched");
-      const userSongs = await rsp.json();
-      console.log(userSongs);
 
-      setSongs([
-        ...userSongs.map((s) => {
-          return { ...s, link: s.src };
-        }),
-      ]);
-    } catch {
-      console.log("failed fetching songs from DB");
-    }
+  // #region media control
+  const playSong = (id) => {
+    const song = songs.find((s) => s.id === id);
+    setCurrentSongId(song.id);
+    setPlayerSrc({
+      type: "audio",
+      sources: [
+        {
+          src: song.src,
+          ...(song.provider && { provider: song.provider }),
+        },
+      ],
+    });
+    setShowPlayer(true);
+  };
+
+  const stopSong = () => {
+    setCurrentSongId(null);
+    setPlayerSrc({});
+    setShowPlayer(false);
   };
 
   const playAll = () => {
@@ -96,19 +84,12 @@ function App() {
     currentSongIndexRef.current = 0;
   };
 
-  const playSong = (id) => {
-    const song = songs.find((s) => s.id === id);
-    setCurrentSongId(song.id);
-    setPlayerSrc({
-      type: "audio",
-      sources: [
-        {
-          src: song.link,
-          ...(song.provider && { provider: song.provider }),
-        },
-      ],
-    });
-    setShowPlayer(true);
+  const shuffleSongs = () => {
+    for (let i = songs.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [songs[i], songs[j]] = [songs[j], songs[i]];
+    }
+    setSongs([...songs]);
   };
 
   const getNextSongId = () => {
@@ -116,6 +97,7 @@ function App() {
       songs.length <= currentSongIndexRef.current - 2 ||
       currentSongIndexRef.current < 0
     ) {
+      playAllCondRef.current = false;
       console.log("no next song");
       return;
     }
@@ -128,16 +110,12 @@ function App() {
     nextSongId && playSong(nextSongId);
   };
 
-  const stopSong = () => {
-    setCurrentSongId(null);
-    setPlayerSrc({});
-    setShowPlayer(false);
-    // plyrRef.current.plyr.pause();
-  };
+  // #endregion
 
-  const addSongToDB = async (song) => {
+  // #region server control
+  const addSongToServer = async (song) => {
     try {
-      const rsp = await fetch("http://localhost:5215/songs/", {
+      const rsp = await fetch(serverUrl + "songs/", {
         headers: {
           "Content-Type": "application/json",
           authorization: "Bearer " + userAccessToken,
@@ -164,22 +142,9 @@ function App() {
     }
   };
 
-  const addSong = async (title, artist, link, srcType) => {
-    if (songs.find((s) => s.link === link)) {
-      console.log("song already exists");
-      return;
-    }
-    const song = new Song(title, artist, link, srcType);
+  const removeSongFromServer = async (songId) => {
     if (userAccessToken) {
-      await addSongToDB(song);
-    }
-    setSongs([...songs, song]);
-  };
-
-  const removeSong = async (id) => {
-    console.log("removing " + id);
-    if (userAccessToken) {
-      const rsp = await fetch("http://localhost:5215/songs/" + id, {
+      const rsp = await fetch(serverUrl + "songs/" + songId, {
         headers: {
           "Content-Type": "application/json",
           authorization: "Bearer " + userAccessToken,
@@ -189,22 +154,69 @@ function App() {
       const data = await rsp.json();
       console.log(data);
     }
+  };
+
+  const syncUserSongs = async (AccessToken) => {
+    try {
+      for (const s of songs) {
+        await addSongToServer(s);
+      }
+    } catch {
+      console.log("failed adding current songs to DB");
+    }
+    try {
+      const rsp = await fetch(serverUrl + "songs/", {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: "Bearer " + AccessToken,
+        },
+      });
+      const userSongs = await rsp.json();
+
+      setSongs([
+        ...userSongs.map((s) => {
+          return { ...s, link: s.src };
+        }),
+      ]);
+    } catch {
+      console.log("failed fetching songs from DB");
+    }
+  };
+
+  const getPlaylist = async (playlistId) => {
+    const rsp = await fetch(serverUrl + "playlist/" + playlistId, {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: "Bearer " + userAccessToken,
+      },
+    });
+    const playList = await rsp.json();
+    console.log(playList.songs);
+    setSongs(playList.songs);
+  };
+  // #endregion
+
+  // #region song list control
+
+  const addSong = async (title, artist, link, srcType) => {
+    if (songs.find((s) => s.link === link)) {
+      console.log("song already exists");
+      return;
+    }
+    const song = new Song(title, artist, link, srcType);
+    if (userAccessToken) {
+      await addSongToServer(song);
+    }
+    setSongs([...songs, song]);
+  };
+
+  const removeSong = async (id) => {
+    console.log("removing " + id);
+    removeSongFromServer(id);
     setSongs([...songs.filter((s) => s.id !== id)]);
     console.log(songs);
   };
-
-  const shuffleSongs = () => {
-    for (let i = songs.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [songs[i], songs[j]] = [songs[j], songs[i]];
-    }
-    setSongs([...songs]);
-  };
-
-  // const exitPlayer = () => {
-  //   setPlayerSrc(null);
-  // };
-  // use contexts
+  // #endregion
 
   return (
     <div className="App">
@@ -227,31 +239,38 @@ function App() {
         <Button onClick={shuffleSongs}>shuffle</Button>
         <Header />
         <Form addSong={addSong} />
+        <PlaylistPicker
+          playlist={playlist}
+          setPlaylist={setPlaylist}
+          syncUserSongs={syncUserSongs}
+        />
 
         <div className="song-containers">
           <songContext.Provider
-            value={{ currentSongId, removeSong, playSong, stopSong: stopSong }}
+            value={{ currentSongId, removeSong, playSong, stopSong }}
           >
             <SongList songs={songs} />
           </songContext.Provider>
           <Search addSong={addSong} />
         </div>
       </UserContext.Provider>
-      <Plyr
-        ref={(el) => {
-          if (el?.plyr?.on) {
-            el.plyr.on("ended", () => {
-              if (playAllCondRef.current) {
-                playNextSong();
-              }
-            });
-          }
-          plyrRef.current = el;
-        }}
-        source={playerSrc}
-        options={videoOptions}
-        hidden={showPlayer}
-      />
+      {playerSrc && (
+        <Plyr
+          ref={(el) => {
+            if (el?.plyr?.on) {
+              el.plyr.on("ended", () => {
+                if (playAllCondRef.current) {
+                  playNextSong();
+                }
+              });
+            }
+            plyrRef.current = el;
+          }}
+          source={playerSrc}
+          options={videoOptions}
+          hidden={showPlayer}
+        />
+      )}
     </div>
   );
 }

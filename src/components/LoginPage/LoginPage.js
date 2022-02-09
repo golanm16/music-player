@@ -19,6 +19,7 @@ import UserContext from "../../contexts/UserContext";
 import { useCookies } from "react-cookie";
 
 export const LoginPage = () => {
+  const serverUrl = process.env.REACT_APP_SONGS_SERVER_URL;
   const [expanded, setExpanded] = useState(false);
   const [isButtonLogin, setIsButtonLogin] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -41,12 +42,13 @@ export const LoginPage = () => {
       setExpanded(false);
       setUserAccessToken(cookies["access-token"]);
     }
+    console.log(userAccessToken);
   }, [userAccessToken]);
 
   //functions
   const login = async (userName, password) => {
     try {
-      const rsp = await fetch("http://localhost:5215/users/login", {
+      const rsp = await fetch(serverUrl + "users/login", {
         headers: {
           "Content-Type": "application/json",
         },
