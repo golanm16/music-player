@@ -78,18 +78,21 @@ export const Song = ({ title, artist, id, link, provider }) => {
             orientation="vertical"
             aria-label="vertical outlined button group"
           >
-            {playlists.map((pl) => (
-              <Button
-                key={pl._id}
-                value={pl._id}
-                onClick={(e) => {
-                  addSongToPlaylist(link, e.target.value);
-                  setPlaylists(null);
-                }}
-              >
-                {pl.name}
-              </Button>
-            ))}
+            {playlists.map(
+              (pl) =>
+                pl.songs.includes(id) || (
+                  <Button
+                    key={pl._id}
+                    value={pl._id}
+                    onClick={(e) => {
+                      addSongToPlaylist(link, e.target.value);
+                      setPlaylists(null);
+                    }}
+                  >
+                    {pl.name}
+                  </Button>
+                )
+            )}
           </ButtonGroup>
         )}
       </div>
